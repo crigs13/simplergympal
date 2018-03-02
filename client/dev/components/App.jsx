@@ -1,4 +1,8 @@
 import React from 'react';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import RaisedButton from 'material-ui/RaisedButton';
+import WorkoutEntry from './WorkoutEntry.jsx';
+import Exercises from './Exercises.jsx';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -8,15 +12,16 @@ export default class App extends React.Component {
     };
   }
 
-  componentDidMount() {
-    console.log('mounted');
-  }
-
   render() {
     return (
-      <div>
-        Hello World
-      </div>
+      <MuiThemeProvider>
+        <div>
+          Hello World
+        </div>
+        <WorkoutEntry />
+        <Exercises />
+        <RaisedButton label="Default" />
+      </MuiThemeProvider>
     );
   }
 }
