@@ -31,6 +31,20 @@ app.post('/workouts', (req, res) => {
   });
 });
 
+app.post('/addExercise', (req, res) => {
+  const { workoutName } = req.body;
+  dbhelper.addNewExercise(workoutName, null, null, null, (data) => {
+    res.status(201).send(data);
+  });
+});
+
+app.post('/addSets', (req, res) => {
+  const { workoutName, setData } = req.body;
+  dbhelper.addAllSetData(workoutName, setData, () => {
+    res.status(201);
+  });
+});
+
 const port = 9001;
 
 app.listen(port, () => {

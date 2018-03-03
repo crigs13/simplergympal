@@ -36,15 +36,33 @@ exports.addNewExercise = (workoutName, date, location, notes, cb) => {
   });
 };
 
-exports.addSetData = (exerciseID, setNumber, weight, reps, cb) => {
-  const queryString = 'INSERT INTO sets (exercise_ID, setNumber, weight, reps) VALUES (?, ?, ?, ?)';
-  db.query(queryString, [exerciseID, setNumber, weight, reps], (err, result) => {
-    if (err) {
-      console.log('ERROR in dbhelpers addSetData, error: ', err);
-      // cb(err);
-    } else {
-      cb(result);
-    }
+// exports.addSetData = (workoutName, setNumber, weight, reps, cb) => {
+//   const queryString = 'INSERT INTO sets (setNumber, weight, reps, exercise_ID) VALUES (?, ?, ?, (SELECT id FROM workouts WHERE name=?))';
+//   db.query(queryString, [setNumber, weight, reps, workoutName], (err, result) => {
+//     if (err) {
+//       console.log('ERROR in dbhelpers addSetData, error: ', err);
+//       // cb(err);
+//     } else {
+//       cb(result);
+//     }
+//   });
+// };
+
+exports.addAllSetData = (workoutName, setData, cb) => {
+  const queryString = 'INSERT INTO sets (setNumber, weight, reps, exercise_ID) VALUES (?, ?, ?, (SELECT id FROM workouts WHERE name=?))';
+  let itemsProcessed = 0;
+  setData.forEach((set, i, array) => {
+    db.query(queryString, [i + 1, set.weight, set.reps, workoutName], (err, result) => {
+      if (err) {
+        console.log('ERROR in dbhelpers addAllSetData, error: ', err);
+      } else {
+        console.log('Successful add to DB');
+        itemsProcessed += 1;
+        if (itemsProcessed === array.length) {
+          cb(result);
+        }
+      }
+    });
   });
 };
 

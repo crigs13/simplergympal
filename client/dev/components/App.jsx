@@ -4,6 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import WorkoutEntry from './WorkoutEntry.jsx';
 import Exercises from './Exercises.jsx';
 import Workouts from './Workouts.jsx';
+import Categories from './Categories.jsx';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -21,6 +22,7 @@ export default class App extends React.Component {
         <Workouts
           username={this.state.username}
         />
+        <Categories />
       </MuiThemeProvider>
     );
   }

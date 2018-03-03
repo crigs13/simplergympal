@@ -44,11 +44,10 @@ export default class Workouts extends React.Component {
     this.handleExerciseDialogClose = this.handleExerciseDialogClose.bind(this);
     this.handleWorkoutListClick = this.handleWorkoutListClick.bind(this);
     this.addNewWorkout = this.addNewWorkout.bind(this);
-    this.addNewExercise = this.addNewExercise.bind(this);
+    this.addNewExerciseToDB = this.addNewExerciseToDB.bind(this);
     this.handleExistingCategorySelect = this.handleExistingCategorySelect.bind(this);
     this.handleNewCategorySelect = this.handleNewCategorySelect.bind(this);
     this.addSet = this.addSet.bind(this);
-    this.addNewExercise = this.addNewExercise.bind(this);
   }
 
   componentDidMount() {
@@ -81,14 +80,12 @@ export default class Workouts extends React.Component {
   }
 
   handleRepChange(e) {
-    console.log('handling rep change');
     this.setState({
       exerciseRepCount: e.target.value,
     }, this.checkRequiredNewExerciseFields);
   }
 
   handleWeightChange(e) {
-    console.log('handling weight change');
     this.setState({
       exerciseWeight: e.target.value,
     }, this.checkRequiredNewExerciseFields);
@@ -130,7 +127,6 @@ export default class Workouts extends React.Component {
   }
 
   checkRequiredNewExerciseFields() {
-    console.log('checking for number');
     if (!isNaN(this.state.exerciseRepCount)
       && !isNaN(this.state.exerciseWeight)
       && this.state.exerciseRepCount > 0
@@ -193,7 +189,7 @@ export default class Workouts extends React.Component {
       username: this.props.username,
       name: this.state.newWorkoutName,
       category: this.state.newWorkoutCategory,
-    });
+    }, this.setState({ dialogOpen: false }));
   }
 
   handleExistingCategorySelect(event, index, value) {
@@ -222,11 +218,31 @@ export default class Workouts extends React.Component {
     }, this.checkRequiredNewWorkoutFields);
   }
 
-  addNewExercise() {
-    // axios.post('/addExercise', {
-    //
-    // })
-    // console.log('fill me in');
+  addNewExerciseToDB() {
+    axios.post('/addExercise', {
+      workoutName: this.state.currentWorkout,
+    })
+      .then((res) => {
+        console.log('response from server: ', res);
+        this.addNewSetsToDB();
+        this.setState({ exerciseDialogOpen: false });
+      })
+      .catch((err) => {
+        console.log('ERROR in axios.post within addNewExerciseToDB, error: ', err);
+      });
+  }
+
+  addNewSetsToDB() {
+    axios.post('/addSets', {
+      setData: this.state.setData,
+      workoutName: this.state.currentWorkout,
+    })
+      .then((res) => {
+        console.log('response from server: ', res);
+      })
+      .catch((err) => {
+        console.log('ERROR in axios.post within addNewSetsToDB, error: ', err);
+      });
   }
 
   addSet() {
@@ -271,7 +287,7 @@ export default class Workouts extends React.Component {
         label="Save"
         disabled={this.state.newExerciseButtonState}
         primary={true}
-        onClick={this.addNewExercise}
+        onClick={this.addNewExerciseToDB}
       />,
     ];
 
