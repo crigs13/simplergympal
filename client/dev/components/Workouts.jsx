@@ -47,10 +47,16 @@ export default class Workouts extends React.Component {
   }
 
   checkRequiredNewWorkoutFields() {
-    if (this.state.newWorkoutName.length && this.state.newWorkoutCategory.length) {
-      this.setState({
-        newWorkoutButtonState: false,
-      });
+    if (this.state.newWorkoutCategory !== null) {
+      if (this.state.newWorkoutName.length && this.state.newWorkoutCategory.length) {
+        this.setState({
+          newWorkoutButtonState: false,
+        });
+      } else {
+        this.setState({
+          newWorkoutButtonState: true,
+        });
+      }
     } else {
       this.setState({
         newWorkoutButtonState: true,
@@ -85,6 +91,7 @@ export default class Workouts extends React.Component {
       newWorkoutCategory: value,
     }, () => {
       console.log('this is the new state of newWorkoutCategory: ', this.state.newWorkoutCategory);
+      this.checkRequiredNewWorkoutFields();
     });
   }
 
