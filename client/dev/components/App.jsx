@@ -16,9 +16,6 @@ export default class App extends React.Component {
   render() {
     return (
       <MuiThemeProvider>
-        <div>
-          Hello World
-        </div>
         <WorkoutEntry />
         <Exercises />
         <Workouts

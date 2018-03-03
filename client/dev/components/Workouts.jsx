@@ -1,10 +1,14 @@
 import React from 'react';
+
 import { List, ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import Dialog from 'material-ui/Dialog';
+import Divider from 'material-ui/Divider';
 import FlatButton from 'material-ui/FlatButton';
+import MenuItem from 'material-ui/MenuItem';
+import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
+
 import axios from 'axios';
 
 export default class Workouts extends React.Component {
@@ -15,6 +19,9 @@ export default class Workouts extends React.Component {
       newWorkoutButtonState: true,
       newWorkoutName: '',
       newWorkoutCategory: '',
+      existingCategoryValue: null,
+      newCategoryDialogState: true,
+      categoryButtonText: 'Add New Category',
     };
     this.handleNewWorkoutNameChange = this.handleNewWorkoutNameChange.bind(this);
     this.handleNewWorkoutCategoryChange = this.handleNewWorkoutCategoryChange.bind(this);
@@ -23,6 +30,8 @@ export default class Workouts extends React.Component {
     this.handleDialogClose = this.handleDialogClose.bind(this);
     this.handleWorkoutListClick = this.handleWorkoutListClick.bind(this);
     this.addNewWorkout = this.addNewWorkout.bind(this);
+    this.handleExistingCategorySelect = this.handleExistingCategorySelect.bind(this);
+    this.handleNewCategorySelect = this.handleNewCategorySelect.bind(this);
   }
 
   handleNewWorkoutNameChange(e) {
@@ -67,7 +76,32 @@ export default class Workouts extends React.Component {
       name: this.state.newWorkoutName,
       category: this.state.newWorkoutCategory,
     });
-    // add new workout to DB
+  }
+
+  handleExistingCategorySelect(event, index, value) {
+    console.log('this is the value: ', value);
+    this.setState({
+      existingCategoryValue: value,
+      newWorkoutCategory: value,
+    }, () => {
+      console.log('this is the new state of newWorkoutCategory: ', this.state.newWorkoutCategory);
+    });
+  }
+
+  handleNewCategorySelect() {
+    this.setState({
+      newCategoryDialogState: !this.state.newCategoryDialogState,
+    }, () => {
+      if (this.state.newCategoryDialogState) {
+        this.setState({
+          categoryButtonText: 'Add New Category',
+        });
+      } else {
+        this.setState({
+          categoryButtonText: 'Show List',
+        });
+      }
+    });
   }
 
   render() {
@@ -101,10 +135,28 @@ export default class Workouts extends React.Component {
             onChange={this.handleNewWorkoutNameChange}
           />
           <br />
-          <TextField
-            id="new-workout-category-input"
-            hintText="Workout Category"
-            onChange={this.handleNewWorkoutCategoryChange}
+          {
+            this.state.newCategoryDialogState ?
+              <SelectField
+                floatingLabelText="Workout Category"
+                value={this.state.existingCategoryValue}
+                onChange={this.handleExistingCategorySelect}
+              >
+                <MenuItem value={null} primaryText="" />
+                <MenuItem value="Category1" primaryText="Category1" />
+                <MenuItem value="Category2" primaryText="Category2" />
+              </SelectField>
+            :
+              <TextField
+                id="new-workout-category-input"
+                hintText="Workout Category"
+                onChange={this.handleNewWorkoutCategoryChange}
+              />
+          }
+          <FlatButton
+            label={this.state.categoryButtonText}
+            primary={true}
+            onClick={this.handleNewCategorySelect}
           />
         </Dialog>
         <List>
@@ -136,3 +188,10 @@ export default class Workouts extends React.Component {
     );
   }
 }
+
+// <br />
+// <TextField
+//   id="new-workout-category-input"
+//   hintText="Workout Category"
+//   onChange={this.handleNewWorkoutCategoryChange}
+// />
