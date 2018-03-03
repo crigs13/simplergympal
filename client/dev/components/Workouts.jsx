@@ -18,14 +18,16 @@ export default class Workouts extends React.Component {
       dialogOpen: false,
       exerciseDialogOpen: false,
       newWorkoutButtonState: true,
+      newExerciseButtonState: true,
+      addSetButtonState: true,
       newWorkoutName: '',
       newWorkoutCategory: '',
       exerciseRepCount: 0,
       exerciseWeight: 0,
-      newExerciseButtonState: true,
       existingCategoryValue: null,
       newCategoryDialogState: true,
       categoryButtonText: 'Add New Category',
+      setData: [],
       userWorkouts: [],
       userCategories: [],
       currentWorkout: '',
@@ -45,6 +47,8 @@ export default class Workouts extends React.Component {
     this.addNewExercise = this.addNewExercise.bind(this);
     this.handleExistingCategorySelect = this.handleExistingCategorySelect.bind(this);
     this.handleNewCategorySelect = this.handleNewCategorySelect.bind(this);
+    this.addSet = this.addSet.bind(this);
+    this.addNewExercise = this.addNewExercise.bind(this);
   }
 
   componentDidMount() {
@@ -95,7 +99,14 @@ export default class Workouts extends React.Component {
   }
 
   handleExerciseDialogOpen() {
-    this.setState({ exerciseDialogOpen: true });
+    this.setState({
+      exerciseDialogOpen: true,
+      setData: [],
+      exerciseRepCount: 0,
+      exerciseWeight: 0,
+      newExerciseButtonState: true,
+      addSetButtonState: true,
+    });
   }
 
   handleDialogOpen() {
@@ -126,13 +137,25 @@ export default class Workouts extends React.Component {
       && this.state.exerciseWeight > 0) {
       if (this.state.exerciseRepCount.length && this.state.exerciseWeight.length) {
         this.setState({
-          newExerciseButtonState: false,
+          addSetButtonState: false,
         });
       } else {
         this.setState({
-          newExerciseButtonState: true,
+          addSetButtonState: true,
         });
       }
+    } else {
+      this.setState({
+        addSetButtonState: true,
+      });
+    }
+  }
+
+  checkRequiredSetInformation() {
+    if (this.state.setData.length) {
+      this.setState({
+        newExerciseButtonState: false,
+      });
     } else {
       this.setState({
         newExerciseButtonState: true,
@@ -200,7 +223,21 @@ export default class Workouts extends React.Component {
   }
 
   addNewExercise() {
-    console.log('fill me in');
+    // axios.post('/addExercise', {
+    //
+    // })
+    // console.log('fill me in');
+  }
+
+  addSet() {
+    const temp = this.state.setData.slice();
+    temp.push({
+      weight: this.state.exerciseWeight,
+      reps: this.state.exerciseRepCount,
+    });
+    this.setState({
+      setData: temp,
+    }, this.checkRequiredSetInformation);
   }
 
   render() {
@@ -225,7 +262,13 @@ export default class Workouts extends React.Component {
         onClick={this.handleExerciseDialogClose}
       />,
       <FlatButton
-        label="Submit"
+        label="Add Set"
+        disabled={this.state.addSetButtonState}
+        primary={true}
+        onClick={this.addSet}
+      />,
+      <FlatButton
+        label="Save"
         disabled={this.state.newExerciseButtonState}
         primary={true}
         onClick={this.addNewExercise}
@@ -243,7 +286,7 @@ export default class Workouts extends React.Component {
         >
           <TextField
             id="new-workout-name-input"
-            hintText="Workout Name"
+            floatingLabelText="Workout Name"
             onChange={this.handleNewWorkoutNameChange}
           />
           <br />
@@ -268,7 +311,7 @@ export default class Workouts extends React.Component {
             :
               <TextField
                 id="new-workout-category-input"
-                hintText="Workout Category"
+                floatingLabelText="Workout Category"
                 onChange={this.handleNewWorkoutCategoryChange}
               />
           }
@@ -287,13 +330,13 @@ export default class Workouts extends React.Component {
         >
           <TextField
             id="new-exercise-rep-input"
-            hintText="Reps"
+            floatingLabelText="Reps"
             onChange={this.handleRepChange}
           />
           <br />
           <TextField
             id="new-exercise-weight-input"
-            hintText="Weight"
+            floatingLabelText="Weight"
             onChange={this.handleWeightChange}
           />
         </Dialog>
