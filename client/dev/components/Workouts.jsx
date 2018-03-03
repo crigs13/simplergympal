@@ -8,6 +8,7 @@ import FlatButton from 'material-ui/FlatButton';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
+import Moment from 'react-moment';
 
 import axios from 'axios';
 
@@ -15,7 +16,7 @@ export default class Workouts extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dialogOpen: false,
+      workoutDialogOpen: false,
       exerciseDialogOpen: false,
       newWorkoutButtonState: true,
       newExerciseButtonState: true,
@@ -50,9 +51,16 @@ export default class Workouts extends React.Component {
     this.addNewExerciseToDB = this.addNewExerciseToDB.bind(this);
     this.addNewSetsToDB = this.addNewSetsToDB.bind(this);
     this.addSet = this.addSet.bind(this);
+    this.getUsersCategories = this.getUsersCategories.bind(this);
+    this.getUsersWorkouts = this.getUsersWorkouts.bind(this);
   }
 
   componentDidMount() {
+    this.getUsersCategories();
+    this.getUsersWorkouts();
+  }
+
+  getUsersCategories() {
     axios.post('/categories', { username: this.props.username })
       .then((res) => {
         const temp = [];
@@ -64,9 +72,12 @@ export default class Workouts extends React.Component {
         });
       })
       .catch((err) => {
-        console.log('ERROR in componentDidMount within Workouts.jsx, error: ', err);
+        console.log('ERROR in getUsersCategories, error: ', err);
       });
-    axios.post('/workouts', { username : this.props.username })
+  }
+
+  getUsersWorkouts() {
+    axios.post('/workouts', { username: this.props.username })
       .then((res) => {
         const temp = [];
         res.data.forEach((workout) => {
@@ -109,11 +120,11 @@ export default class Workouts extends React.Component {
   }
 
   handleWorkoutDialogOpen() {
-    this.setState({ dialogOpen: true });
+    this.setState({ workoutDialogOpen: true });
   }
 
   handleWorkoutDialogClose() {
-    this.setState({ dialogOpen: false });
+    this.setState({ workoutDialogOpen: false });
   }
 
   handleNewWorkoutNameChange(e) {
@@ -217,12 +228,21 @@ export default class Workouts extends React.Component {
       username: this.props.username,
       name: this.state.newWorkoutName,
       category: this.state.newWorkoutCategory,
-    }, this.setState({ dialogOpen: false }));
+    })
+      .then(() => {
+        this.setState({ workoutDialogOpen: false });
+        this.getUsersWorkouts();
+      })
+      .catch((err) => {
+        console.log('ERROR in axios.post within addNewWorkout, error: ', err);
+      });
   }
 
   addNewExerciseToDB() {
+    const date = new Date();
     axios.post('/addExercise', {
       workoutName: this.state.currentWorkout,
+      date: date,
     })
       .then(() => {
         this.addNewSetsToDB();
@@ -258,7 +278,7 @@ export default class Workouts extends React.Component {
   }
 
   render() {
-    const actions = [
+    const workoutActions = [
       <FlatButton
         label="Cancel"
         primary={true}
@@ -296,9 +316,9 @@ export default class Workouts extends React.Component {
       <div>
         <Dialog
           title="New Workout"
-          actions={actions}
+          actions={workoutActions}
           modal={false}
-          open={this.state.dialogOpen}
+          open={this.state.workoutDialogOpen}
           onRequestClose={this.handleWorkoutDialogClose}
         >
           <TextField

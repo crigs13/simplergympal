@@ -3,6 +3,8 @@ import SelectField from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
+import Workouts from './Workouts.jsx';
+import Categories from './Categories.jsx';
 
 const styles = {
   customWidth: {
@@ -77,10 +79,16 @@ export default class Exercises extends React.Component {
           <div style={styles.slide}>
             <h2 style={styles.headline}>Workouts</h2>
             List out the user's workouts here<br />
+            <Workouts
+              username="chris"
+            />
           </div>
           <div style={styles.slide}>
             <h2 style={styles.headline}>Categories</h2>
             List out the user's groups/categories here<br />
+            <Categories
+              username="chris"
+            />
           </div>
         </SwipeableViews>
       </div>

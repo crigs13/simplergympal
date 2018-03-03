@@ -25,28 +25,19 @@ exports.addNewWorkout = (name, category, username, cb) => {
 };
 
 exports.addNewExercise = (workoutName, date, location, notes, cb) => {
-  const queryString = 'INSERT INTO exercises (workout_ID, date, location, notes) VALUES ((SELECT id FROM workouts WHERE name = ?), ?, ?, ?)';
+  console.log('within addNewExercise, fields sent: ', workoutName, date, location, notes);
+  const queryString = 'INSERT INTO exercises (workout_ID, date, location, notes) VALUES ((SELECT id FROM workouts WHERE name=?), ?, ?, ?)';
+  console.log('this is the queryString: ', queryString);
   db.query(queryString, [workoutName, date, location, notes], (err, result) => {
     if (err) {
       console.log('ERROR in dbhelpers addNewExercise, error: ', err);
       // cb(err);
     } else {
-      cb(result);
+      console.log('this is the result: ', result);
+      cb();
     }
   });
 };
-
-// exports.addSetData = (workoutName, setNumber, weight, reps, cb) => {
-//   const queryString = 'INSERT INTO sets (setNumber, weight, reps, exercise_ID) VALUES (?, ?, ?, (SELECT id FROM workouts WHERE name=?))';
-//   db.query(queryString, [setNumber, weight, reps, workoutName], (err, result) => {
-//     if (err) {
-//       console.log('ERROR in dbhelpers addSetData, error: ', err);
-//       // cb(err);
-//     } else {
-//       cb(result);
-//     }
-//   });
-// };
 
 exports.addAllSetData = (workoutName, setData, cb) => {
   const queryString = 'INSERT INTO sets (setNumber, weight, reps, exercise_ID) VALUES (?, ?, ?, (SELECT id FROM workouts WHERE name=?))';
@@ -83,6 +74,17 @@ exports.getUsersCategories = (username, cb) => {
   db.query(queryString, [username], (err, result) => {
     if (err) {
       console.log('ERROR in dbhelpers getUsersCategories, error: ', err);
+    } else {
+      cb(result);
+    }
+  });
+};
+
+exports.getUserWorkoutsByCategory = (username, category, cb) => {
+  const queryString = 'SELECT name FROM workouts WHERE user_ID=(SELECT id FROM users WHERE username=?) AND category=?';
+  db.query(queryString, [username, category], (err, result) => {
+    if (err) {
+      console.log('ERROR in dbhelpers getUserWorkoutsByCategory, error: ', err);
     } else {
       cb(result);
     }
