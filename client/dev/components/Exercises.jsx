@@ -64,22 +64,23 @@ export default class Exercises extends React.Component {
         >
           <Tab label="Recent Stats" value={0} />
           <Tab label="Workouts" value={1} />
-          <Tab label="Groups" value={2} />
-          <Tab label="Tab Four" value={3} />
+          <Tab label="Categories" value={2} />
         </Tabs>
         <SwipeableViews
           index={this.state.slideIndex}
           onChangeIndex={this.handleTabChange}
         >
-          <div>
-            <h2 style={styles.headline}>Tabs with slide effect</h2>
-            Swipe to see the next slide.<br />
+          <div style={styles.slide}>
+            <h2 style={styles.headline}>Recent Workouts</h2>
+            show recent workouts here<br />
           </div>
           <div style={styles.slide}>
-            slide #2
+            <h2 style={styles.headline}>Categories</h2>
+            List out the user's workouts here<br />
           </div>
           <div style={styles.slide}>
-            slide #3
+            <h2 style={styles.headline}>Groups</h2>
+            List out the user's groups/categories here<br />
           </div>
         </SwipeableViews>
       </div>

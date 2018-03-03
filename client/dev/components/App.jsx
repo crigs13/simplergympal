@@ -3,12 +3,13 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import WorkoutEntry from './WorkoutEntry.jsx';
 import Exercises from './Exercises.jsx';
+import Workouts from './Workouts.jsx';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      placeholder: 'placeholder',
+      username: 'chris',
     };
   }
 
@@ -20,7 +21,9 @@ export default class App extends React.Component {
         </div>
         <WorkoutEntry />
         <Exercises />
-        <RaisedButton label="Default" />
+        <Workouts
+          username={this.state.username}
+        />
       </MuiThemeProvider>
     );
   }
