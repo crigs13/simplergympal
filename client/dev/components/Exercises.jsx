@@ -71,15 +71,15 @@ export default class Exercises extends React.Component {
           onChangeIndex={this.handleTabChange}
         >
           <div style={styles.slide}>
-            <h2 style={styles.headline}>Recent Workouts</h2>
+            <h2 style={styles.headline}>Stats</h2>
             show recent workouts here<br />
           </div>
           <div style={styles.slide}>
-            <h2 style={styles.headline}>Categories</h2>
+            <h2 style={styles.headline}>Workouts</h2>
             List out the user's workouts here<br />
           </div>
           <div style={styles.slide}>
-            <h2 style={styles.headline}>Groups</h2>
+            <h2 style={styles.headline}>Categories</h2>
             List out the user's groups/categories here<br />
           </div>
         </SwipeableViews>

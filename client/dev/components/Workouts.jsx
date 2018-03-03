@@ -16,22 +16,94 @@ export default class Workouts extends React.Component {
     super(props);
     this.state = {
       dialogOpen: false,
+      exerciseDialogOpen: false,
       newWorkoutButtonState: true,
       newWorkoutName: '',
       newWorkoutCategory: '',
+      exerciseRepCount: 0,
+      exerciseWeight: 0,
+      newExerciseButtonState: true,
       existingCategoryValue: null,
       newCategoryDialogState: true,
       categoryButtonText: 'Add New Category',
+      userWorkouts: [],
+      userCategories: [],
+      currentWorkout: '',
     };
     this.handleNewWorkoutNameChange = this.handleNewWorkoutNameChange.bind(this);
     this.handleNewWorkoutCategoryChange = this.handleNewWorkoutCategoryChange.bind(this);
+    this.handleRepChange = this.handleRepChange.bind(this);
+    this.handleWeightChange = this.handleWeightChange.bind(this);
     this.checkRequiredNewWorkoutFields = this.checkRequiredNewWorkoutFields.bind(this);
+    this.checkRequiredNewExerciseFields = this.checkRequiredNewExerciseFields.bind(this);
     this.handleDialogOpen = this.handleDialogOpen.bind(this);
     this.handleDialogClose = this.handleDialogClose.bind(this);
+    this.handleExerciseDialogOpen = this.handleExerciseDialogOpen.bind(this);
+    this.handleExerciseDialogClose = this.handleExerciseDialogClose.bind(this);
     this.handleWorkoutListClick = this.handleWorkoutListClick.bind(this);
     this.addNewWorkout = this.addNewWorkout.bind(this);
+    this.addNewExercise = this.addNewExercise.bind(this);
     this.handleExistingCategorySelect = this.handleExistingCategorySelect.bind(this);
     this.handleNewCategorySelect = this.handleNewCategorySelect.bind(this);
+  }
+
+  componentDidMount() {
+    axios.post('/categories', { username: this.props.username })
+      .then((res) => {
+        const temp = [];
+        res.data.forEach((category) => {
+          temp.push(category.category);
+        });
+        this.setState({
+          userCategories: temp,
+        });
+      })
+      .catch((err) => {
+        console.log('ERROR in componentDidMount within Workouts.jsx, error: ', err);
+      });
+    axios.post('/workouts', { username : this.props.username })
+      .then((res) => {
+        const temp = [];
+        res.data.forEach((workout) => {
+          temp.push(workout.name);
+        });
+        this.setState({
+          userWorkouts: temp,
+        });
+      })
+      .catch((err) => {
+        console.log('ERROR in componentDidMount within Workouts.jsx, error: ', err);
+      });
+  }
+
+  handleRepChange(e) {
+    console.log('handling rep change');
+    this.setState({
+      exerciseRepCount: e.target.value,
+    }, this.checkRequiredNewExerciseFields);
+  }
+
+  handleWeightChange(e) {
+    console.log('handling weight change');
+    this.setState({
+      exerciseWeight: e.target.value,
+    }, this.checkRequiredNewExerciseFields);
+  }
+
+  handleExerciseDialogClose() {
+    this.setState({ exerciseDialogOpen: false });
+  }
+
+  handleExerciseDialogOpen() {
+    this.setState({ exerciseDialogOpen: true });
+  }
+
+  handleDialogOpen() {
+    this.setState({ dialogOpen: true });
+  }
+
+  handleDialogClose() {
+    this.setState({ dialogOpen: false });
   }
 
   handleNewWorkoutNameChange(e) {
@@ -44,6 +116,28 @@ export default class Workouts extends React.Component {
     this.setState({
       newWorkoutCategory: e.target.value
     }, this.checkRequiredNewWorkoutFields);
+  }
+
+  checkRequiredNewExerciseFields() {
+    console.log('checking for number');
+    if (!isNaN(this.state.exerciseRepCount)
+      && !isNaN(this.state.exerciseWeight)
+      && this.state.exerciseRepCount > 0
+      && this.state.exerciseWeight > 0) {
+      if (this.state.exerciseRepCount.length && this.state.exerciseWeight.length) {
+        this.setState({
+          newExerciseButtonState: false,
+        });
+      } else {
+        this.setState({
+          newExerciseButtonState: true,
+        });
+      }
+    } else {
+      this.setState({
+        newExerciseButtonState: true,
+      });
+    }
   }
 
   checkRequiredNewWorkoutFields() {
@@ -64,16 +158,11 @@ export default class Workouts extends React.Component {
     }
   }
 
-  handleDialogOpen() {
-    this.setState({ dialogOpen: true });
-  }
-
-  handleDialogClose() {
-    this.setState({ dialogOpen: false });
-  }
-
-  handleWorkoutListClick(event) {
-    // this is clicking an existing workout
+  handleWorkoutListClick(workout, event) {
+    this.setState({
+      currentWorkout: workout,
+    });
+    this.handleExerciseDialogOpen();
   }
 
   addNewWorkout(e) {
@@ -85,14 +174,10 @@ export default class Workouts extends React.Component {
   }
 
   handleExistingCategorySelect(event, index, value) {
-    console.log('this is the value: ', value);
     this.setState({
       existingCategoryValue: value,
       newWorkoutCategory: value,
-    }, () => {
-      console.log('this is the new state of newWorkoutCategory: ', this.state.newWorkoutCategory);
-      this.checkRequiredNewWorkoutFields();
-    });
+    }, this.checkRequiredNewWorkoutFields);
   }
 
   handleNewCategorySelect() {
@@ -109,6 +194,13 @@ export default class Workouts extends React.Component {
         });
       }
     });
+    this.setState({
+      newWorkoutCategory: '',
+    }, this.checkRequiredNewWorkoutFields);
+  }
+
+  addNewExercise() {
+    console.log('fill me in');
   }
 
   render() {
@@ -122,8 +214,21 @@ export default class Workouts extends React.Component {
         label="Submit"
         disabled={this.state.newWorkoutButtonState}
         primary={true}
-        keyboardFocused={true}
         onClick={this.addNewWorkout}
+      />,
+    ];
+
+    const exerciseActions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.handleExerciseDialogClose}
+      />,
+      <FlatButton
+        label="Submit"
+        disabled={this.state.newExerciseButtonState}
+        primary={true}
+        onClick={this.addNewExercise}
       />,
     ];
 
@@ -150,8 +255,15 @@ export default class Workouts extends React.Component {
                 onChange={this.handleExistingCategorySelect}
               >
                 <MenuItem value={null} primaryText="" />
-                <MenuItem value="Category1" primaryText="Category1" />
-                <MenuItem value="Category2" primaryText="Category2" />
+                {this.state.userCategories.map((category, i) => {
+                  return (
+                    <MenuItem
+                      value={category}
+                      primaryText={category}
+                      key={i}
+                    />
+                  );
+                })}
               </SelectField>
             :
               <TextField
@@ -166,22 +278,36 @@ export default class Workouts extends React.Component {
             onClick={this.handleNewCategorySelect}
           />
         </Dialog>
+        <Dialog
+          title="New Exercise"
+          actions={exerciseActions}
+          modal={false}
+          open={this.state.exerciseDialogOpen}
+          onRequestClose={this.handleExerciseDialogClose}
+        >
+          <TextField
+            id="new-exercise-rep-input"
+            hintText="Reps"
+            onChange={this.handleRepChange}
+          />
+          <br />
+          <TextField
+            id="new-exercise-weight-input"
+            hintText="Weight"
+            onChange={this.handleWeightChange}
+          />
+        </Dialog>
         <List>
-          <ListItem
-            primaryText="Workout Name #1"
-            rightIcon={<ActionInfo />}
-            onClick={this.handleWorkoutListClick}
-          />
-          <ListItem
-            primaryText="Workout Name #2"
-            rightIcon={<ActionInfo />}
-            onClick={this.handleWorkoutListClick}
-          />
-          <ListItem
-            primaryText="Workout Name #3"
-            rightIcon={<ActionInfo />}
-            onClick={this.handleWorkoutListClick}
-          />
+          {this.state.userWorkouts.map((workout, i) => {
+            return (
+              <ListItem
+                primaryText={workout}
+                rightIcon={<ActionInfo />}
+                onClick={this.handleWorkoutListClick.bind(this, workout)}
+                key={i}
+              />
+          );
+          })}
         </List>
         <Divider />
         <List>
@@ -195,10 +321,3 @@ export default class Workouts extends React.Component {
     );
   }
 }
-
-// <br />
-// <TextField
-//   id="new-workout-category-input"
-//   hintText="Workout Category"
-//   onChange={this.handleNewWorkoutCategoryChange}
-// />

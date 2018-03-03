@@ -12,10 +12,22 @@ app.set('port', 9001);
 
 app.post('/addWorkout', (req, res) => {
   const { name, category, username } = req.body;
-  console.log('this is the data sent; name, category, username: ', name, category, username);
   dbhelper.addNewWorkout(name, category, username, (data) => {
-    console.log('successful add ');
     res.status(201).send(data);
+  });
+});
+
+app.post('/categories', (req, res) => {
+  const { username } = req.body;
+  dbhelper.getUsersCategories(username, (data) => {
+    res.status(200).send(data);
+  });
+});
+
+app.post('/workouts', (req, res) => {
+  const { username } = req.body;
+  dbhelper.getUsersWorkouts(username, (data) => {
+    res.status(200).send(data);
   });
 });
 

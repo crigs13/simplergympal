@@ -49,11 +49,22 @@ exports.addSetData = (exerciseID, setNumber, weight, reps, cb) => {
 };
 
 exports.getUsersWorkouts = (username, cb) => {
-  const queryString = 'SELECT name FROM workouts WHERE (user_ID=(SELECT id FROM users WHERE username=?))';
+  const queryString = 'SELECT name FROM workouts WHERE user_ID=(SELECT id FROM users WHERE username=?)';
   db.query(queryString, [username], (err, result) => {
     if (err) {
       console.log('ERROR in dbhelpers getUsersWorkouts, error: ', err);
       // cb(err);
+    } else {
+      cb(result);
+    }
+  });
+};
+
+exports.getUsersCategories = (username, cb) => {
+  const queryString = 'SELECT DISTINCT category FROM workouts WHERE user_ID=(SELECT id FROM users WHERE username=?)';
+  db.query(queryString, [username], (err, result) => {
+    if (err) {
+      console.log('ERROR in dbhelpers getUsersCategories, error: ', err);
     } else {
       cb(result);
     }
