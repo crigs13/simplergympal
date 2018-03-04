@@ -1,7 +1,5 @@
 const express = require('express');
 const parser = require('body-parser');
-const mysql = require('mysql');
-const request = require('request');
 const dbhelper = require('../database/dbhelpers.js');
 
 const app = express();
@@ -34,14 +32,14 @@ app.post('/workouts', (req, res) => {
 
 app.post('/exercises/add', (req, res) => {
   const { workoutName, date } = req.body;
-  dbhelper.addNewExercise(workoutName, date, null, null, () => {
-    res.status(201).send();
+  dbhelper.addNewExercise(workoutName, date, null, null, (data) => {
+    res.status(201).send(data);
   });
 });
 
 app.post('/sets/add', (req, res) => {
-  const { workoutName, setData } = req.body;
-  dbhelper.addAllSetData(workoutName, setData, () => {
+  const { exerciseId, setData } = req.body;
+  dbhelper.addAllSetData(exerciseId, setData, () => {
     res.status(201).send();
   });
 });
@@ -56,6 +54,13 @@ app.post('/categories/workouts', (req, res) => {
 app.post('/exercises/latest', (req, res) => {
   const { username } = req.body;
   dbhelper.getLatestExercises(username, (data) => {
+    res.status(200).send(data);
+  });
+});
+
+app.post('/exercises/sets/data', (req, res) => {
+  const { exerciseId } = req.body;
+  dbhelper.getExerciseSetData(exerciseId, (data) => {
     res.status(200).send(data);
   });
 });

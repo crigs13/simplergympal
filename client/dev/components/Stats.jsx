@@ -25,7 +25,7 @@ export default class Stats extends React.Component {
                     primaryText={exercise.name}
                     secondaryText={friendlyDate}
                     key={i}
-                    onClick={this.props.handleLatestExerciseListClick}
+                    onClick={this.props.handleLatestExerciseListClick.bind(this, exercise.id)}
                   />
                 </div>
               );

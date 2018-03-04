@@ -21,7 +21,6 @@ export default class SetDialog extends React.Component {
         onClick={this.props.toggleSetDialog}
       />,
     ];
-
     return (
       <div>
         <Dialog
@@ -30,18 +29,18 @@ export default class SetDialog extends React.Component {
           modal={false}
           open={this.props.setDialogOpen}
           onRequestClose={this.props.toggleSetDialog}
-        >testing
+        >
           {
-            // this.props.userWorkouts.map((workout, i) => {
-            //   return (
-            //     <ListItem
-            //       primaryText={workout}
-            //       rightIcon={<ActionInfo />}
-            //       onClick={this.props.handleCategoryDialogListClick.bind(this, workout)}
-            //       key={i}
-            //     />
-            //   );
-            // })
+            this.props.exerciseSetData.map((set, i) => {
+              return (
+                <ListItem
+                  primaryText={`Set #${set.setNumber} - Weight: ${set.weight} lbs - Reps: ${set.reps}`}
+                  secondaryText="Great Job!"
+                  rightIcon={<ActionInfo />}
+                  key={i}
+                />
+              );
+            })
           }
         </Dialog>
       </div>

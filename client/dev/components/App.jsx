@@ -34,6 +34,7 @@ export default class App extends React.Component {
       workoutSelector: 1,
       slideIndex: 0,
       latestExercises: [],
+      exerciseSetData: [],
       workoutDialogOpen: false,
       exerciseDialogOpen: false,
       newWorkoutButtonState: true,
@@ -50,6 +51,7 @@ export default class App extends React.Component {
       userWorkouts: [],
       userCategories: [],
       currentWorkout: '',
+      currentExerciseId: '',
       setDialogOpen: false,
     };
     this.addNewExerciseToDB = this.addNewExerciseToDB.bind(this);
@@ -90,7 +92,6 @@ export default class App extends React.Component {
       username: this.state.username,
     })
       .then((data) => {
-        console.log('this is the data: ', data);
         this.setState({
           latestExercises: data.data,
         });
@@ -272,31 +273,34 @@ export default class App extends React.Component {
   }
 
   addNewExerciseToDB() {
-    console.log('adding new exercise to DB');
     const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
     axios.post('/exercises/add', {
       workoutName: this.state.currentWorkout,
       date: date,
     })
-      .then(() => {
-        this.addNewSetsToDB();
-        this.setState({ exerciseDialogOpen: false });
+      .then((data) => {
+        this.addNewSetsToDB(data.data.insertId);
+        this.toggleExerciseDialog();
       })
       .catch((err) => {
         console.log('ERROR in axios.post within addNewExerciseToDB, error: ', err);
       });
   }
 
-  addNewSetsToDB() {
+  addNewSetsToDB(exerciseId) {
     axios.post('/sets/add', {
       setData: this.state.setData,
-      workoutName: this.state.currentWorkout,
+      exerciseId: exerciseId,
     })
-      .then((res) => {
+      .then((data) => {
         this.setState({
           setData: [],
           currentWorkout: '',
-        });
+          exerciseRepCount: 0,
+          exerciseWeight: 0,
+          addSetButtonState: true,
+          newExerciseButtonState: true,
+        }, this.getLatestExercises);
       })
       .catch((err) => {
         console.log('ERROR in axios.post within addNewSetsToDB, error: ', err);
@@ -348,6 +352,7 @@ export default class App extends React.Component {
     this.setState({
       workoutDialogOpen: !this.state.workoutDialogOpen,
     });
+    this.checkRequiredNewExerciseFields();
   }
 
   toggleSetDialog() {
@@ -362,7 +367,22 @@ export default class App extends React.Component {
     });
   }
 
-  handleLatestExerciseListClick() {
+  handleLatestExerciseListClick(exerciseId) {
+    this.setState({
+      currentExerciseId: exerciseId,
+    }, () => {
+      axios.post('/exercises/sets/data', {
+        exerciseId: exerciseId,
+      })
+        .then((data) => {
+          this.setState({
+            exerciseSetData: data.data,
+          });
+        })
+        .catch((err) => {
+          console.log('ERROR in handleLatestExerciseListClick, error: ', err);
+        });
+    });
     this.toggleSetDialog();
   }
 
@@ -370,6 +390,7 @@ export default class App extends React.Component {
     return (
       <MuiThemeProvider>
         <SetDialog
+          exerciseSetData={this.state.exerciseSetData}
           setDialogOpen={this.state.setDialogOpen}
           toggleSetDialog={this.toggleSetDialog}
         />
@@ -441,14 +462,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-// <Workouts
-//   addNewExerciseToDB={this.addNewExerciseToDB}
-//   addSet={this.addSet}
-//   addSetButtonState={this.state.addSetButtonState}
-//   handleWorkoutListClick={this.handleWorkoutListClick}
-//   newExerciseButtonState={this.newExerciseButtonState}
-//   username="chris"
-//   userWorkouts={this.state.userWorkouts}
-//   toggleWorkoutDialog={this.toggleWorkoutDialog}
-// />
