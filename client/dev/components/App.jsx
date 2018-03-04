@@ -3,7 +3,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import RaisedButton from 'material-ui/RaisedButton';
-import WorkoutEntry from './WorkoutEntry.jsx';
 import Exercises from './Exercises.jsx';
 import Workouts from './Workouts.jsx';
 import Categories from './Categories.jsx';

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { List, ListItem } from 'material-ui/List';
 import ActionInfo from 'material-ui/svg-icons/action/info';
+import ActionDelete from 'material-ui/svg-icons/action/delete';
 import Dialog from 'material-ui/Dialog';
 import Divider from 'material-ui/Divider';
 import FlatButton from 'material-ui/FlatButton';
@@ -15,6 +16,7 @@ export default class Categories extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      categoryDialogOpen: false,
       workoutDialogOpen: false,
       exerciseDialogOpen: false,
       newWorkoutButtonState: true,
@@ -50,6 +52,8 @@ export default class Categories extends React.Component {
     this.addNewExerciseToDB = this.addNewExerciseToDB.bind(this);
     this.addNewSetsToDB = this.addNewSetsToDB.bind(this);
     this.addSet = this.addSet.bind(this);
+    this.handleCategoryDialogClose = this.handleCategoryDialogClose.bind(this);
+    this.handleCategoryDialogOpen = this.handleCategoryDialogOpen.bind(this);
   }
 
   componentDidMount() {
@@ -259,23 +263,42 @@ export default class Categories extends React.Component {
 
 // ******************************************************
 
-  handleCategoryListClick() {
+  handleCategoryListClick(category) {
     // display all workouts associated with that category
-
+    axios.post('/categories/workouts', {
+      username: this.props.username,
+      category: category,
+    })
+      .then((res) => {
+        const temp = [];
+        res.data.forEach((workout) => {
+          temp.push(workout.name);
+        });
+        this.setState({
+          userWorkouts: temp,
+        }, this.handleCategoryDialogOpen);
+      })
+      .catch((err) => {
+        console.log('ERROR in handleCategoryListClick, error: ', err);
+      });
   }
 
   handleCategoryDialogClose() {
     this.setState({ categoryDialogOpen: false });
   }
 
+  handleCategoryDialogOpen() {
+    this.setState({ categoryDialogOpen: true });
+  }
+
   render() {
     const categoryActions = [
       <FlatButton
-        label="Cancel"
+        label="Exit"
         primary={true}
-        onClick={this.handleWorkoutDialogClose}
+        onClick={this.handleCategoryDialogClose}
       />,
-  ];
+    ];
     return (
       <div>
         <Dialog
@@ -285,14 +308,25 @@ export default class Categories extends React.Component {
           open={this.state.categoryDialogOpen}
           onRequestClose={this.handleCategoryDialogClose}
         >
-
+          {
+            this.state.userWorkouts.map((workout, i) => {
+              return (
+                <ListItem
+                  primaryText={workout}
+                  rightIcon={<ActionDelete />}
+                  onClick={console.log('fillthisin')}
+                  key={i}
+                />
+              );
+            })
+          }
         </Dialog>
         <List>
           {this.state.userCategories.map((category, i) => {
             return (
               <ListItem
                 primaryText={category}
-                rightIcon={<ActionInfo />}
+                rightIcon={<ActionDelete />}
                 onClick={this.handleCategoryListClick.bind(this, category)}
                 key={i}
               />
