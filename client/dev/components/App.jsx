@@ -34,7 +34,7 @@ export default class App extends React.Component {
       username: 'chris',
       workoutSelector: 1,
       slideIndex: 0,
-      recentExercises: [],
+      latestExercises: [],
       workoutDialogOpen: false,
       exerciseDialogOpen: false,
       newWorkoutButtonState: true,
@@ -92,7 +92,9 @@ export default class App extends React.Component {
   }
 
   getLatestExercises() {
-    axios.post()
+    // axios.post('/exercises/latest', {
+    //
+    // })
   }
 
   getUsersCategories() {
@@ -259,7 +261,7 @@ export default class App extends React.Component {
   }
 
   addNewWorkout() {
-    axios.post('/addWorkout', {
+    axios.post('/workouts/add', {
       username: this.state.username,
       name: this.state.newWorkoutName,
       category: this.state.newWorkoutCategory,
@@ -274,9 +276,9 @@ export default class App extends React.Component {
   }
 
   addNewExerciseToDB() {
+    console.log('adding new exercise to DB');
     const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    console.log('this is the date: ', date);
-    axios.post('/addExercise', {
+    axios.post('/exercises/add', {
       workoutName: this.state.currentWorkout,
       date: date,
     })
@@ -290,12 +292,16 @@ export default class App extends React.Component {
   }
 
   addNewSetsToDB() {
-    axios.post('/addSets', {
+    axios.post('/sets/add', {
       setData: this.state.setData,
       workoutName: this.state.currentWorkout,
     })
       .then((res) => {
-        console.log('response from server: ', res);
+        // console.log('response from server: ', res);
+        this.setState({
+          setData: [],
+          currentWorkout: '',
+        });
       })
       .catch((err) => {
         console.log('ERROR in axios.post within addNewSetsToDB, error: ', err);
@@ -312,26 +318,6 @@ export default class App extends React.Component {
       setData: temp,
     }, this.checkRequiredSetInformation);
   }
-
-  // handleCategoryListClick() {
-  //   this.setState({
-  //     categoryDialogOpen: true,
-  //     workoutDialogOpen: false,
-  //   });
-  // }
-  //
-  // handleCategoryDialogClose() {
-  //   this.setState({
-  //     categoryDialogOpen: false,
-  //   });
-  // }
-  //
-  // handleCategoryDialogListClick() {
-  //   this.setState({
-  //     categoryDialogOpen: false,
-  //     workoutDialogOpen: true,
-  //   });
-  // }
 
   handleCategoryListClick(category) {
     // display all workouts associated with that category
@@ -362,8 +348,6 @@ export default class App extends React.Component {
   }
 
   handleCategoryDialogListClick(workout) {
-    // console.log('this is the event: ', e);
-    // console.log('this is event.target.value: ', e.target.value);
     this.setState({
       categoryDialogOpen: false,
     });
@@ -374,29 +358,33 @@ export default class App extends React.Component {
     return (
       <MuiThemeProvider>
         <CategoryDialog
-          handleCategoryDialogListClick={this.handleCategoryDialogListClick}
-          handleCategoryDialogClose={this.handleCategoryDialogClose}
           categoryDialogOpen={this.state.categoryDialogOpen}
+          handleCategoryDialogClose={this.handleCategoryDialogClose}
+          handleCategoryDialogListClick={this.handleCategoryDialogListClick}
           handleCategoryListClick={this.handleCategoryListClick}
           userWorkouts={this.state.userWorkouts}
         />
         <WorkoutDialog
-          newWorkoutButtonState={this.state.newWorkoutButtonState}
+          addNewExerciseToDB={this.addNewExerciseToDB}
           addNewWorkout={this.addNewWorkout}
-          handleWorkoutDialogClose={this.handleWorkoutDialogClose}
-          workoutDialogOpen={this.state.workoutDialogOpen}
-          handleNewWorkoutNameChange={this.handleNewWorkoutNameChange}
-          newCategoryDialogState={this.state.newCategoryDialogState}
-          existingCategoryValue={this.state.existingCategoryValue}
-          handleExistingCategorySelect={this.handleExistingCategorySelect}
-          userCategories={this.state.userCategories}
-          handleNewWorkoutCategoryChange={this.handleNewWorkoutCategoryChange}
+          addSet={this.addSet}
+          addSetButtonState={this.state.addSetButtonState}
           categoryButtonText={this.state.categoryButtonText}
-          handleNewCategorySelect={this.handleNewCategorySelect}
           exerciseDialogOpen={this.state.exerciseDialogOpen}
+          existingCategoryValue={this.state.existingCategoryValue}
           handleExerciseDialogClose={this.handleExerciseDialogClose}
+          handleExistingCategorySelect={this.handleExistingCategorySelect}
+          handleNewCategorySelect={this.handleNewCategorySelect}
+          handleNewWorkoutNameChange={this.handleNewWorkoutNameChange}
+          handleNewWorkoutCategoryChange={this.handleNewWorkoutCategoryChange}
           handleRepChange={this.handleRepChange}
           handleWeightChange={this.handleWeightChange}
+          handleWorkoutDialogClose={this.handleWorkoutDialogClose}
+          newCategoryDialogState={this.state.newCategoryDialogState}
+          newExerciseButtonState={this.state.newExerciseButtonState}
+          newWorkoutButtonState={this.state.newWorkoutButtonState}
+          userCategories={this.state.userCategories}
+          workoutDialogOpen={this.state.workoutDialogOpen}
         />
         <Tabs
           onChange={this.handleTabChange}
@@ -419,15 +407,15 @@ export default class App extends React.Component {
             <h2 style={styles.headline}>Workouts</h2>
             List out the user's workouts here<br />
             <Workouts
-              username="chris"
-              handleExerciseDialogClose={this.handleExerciseDialogClose}
-              addSetButtonState={this.state.addSetButtonState}
-              addSet={this.addSet}
-              newExerciseButtonState={this.newExerciseButtonState}
               addNewExerciseToDB={this.addNewExerciseToDB}
-              userWorkouts={this.state.userWorkouts}
-              handleWorkoutListClick={this.handleWorkoutListClick}
+              addSet={this.addSet}
+              addSetButtonState={this.state.addSetButtonState}
+              handleExerciseDialogClose={this.handleExerciseDialogClose}
               handleWorkoutDialogOpen={this.handleWorkoutDialogOpen}
+              handleWorkoutListClick={this.handleWorkoutListClick}
+              newExerciseButtonState={this.newExerciseButtonState}
+              username="chris"
+              userWorkouts={this.state.userWorkouts}
             />
           </div>
           <div style={styles.slide}>

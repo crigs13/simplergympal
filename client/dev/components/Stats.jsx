@@ -15,7 +15,7 @@ export default class Stats extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      placeholder: 'chris',
+      placeholder: '',
     };
   }
 
@@ -39,3 +39,28 @@ export default class Stats extends React.Component {
 //     </div>
 //   );
 // }
+
+// return (
+//   <div>
+//     <List>
+//       {this.props.userWorkouts.map((workout, i) => {
+//         return (
+//           <ListItem
+//             primaryText={workout}
+//             rightIcon={<ActionInfo />}
+//             onClick={this.props.handleWorkoutListClick.bind(this, workout)}
+//             key={i}
+//           />
+//       );
+//       })}
+//     </List>
+//     <Divider />
+//     <List>
+//       <ListItem
+//         primaryText="Add New Workout"
+//         rightIcon={<ActionInfo />}
+//         onClick={this.props.handleWorkoutDialogOpen}
+//       />
+//     </List>
+//   </div>
+// );

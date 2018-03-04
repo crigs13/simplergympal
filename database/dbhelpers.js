@@ -33,7 +33,7 @@ exports.addNewExercise = (workoutName, date, location, notes, cb) => {
       console.log('ERROR in dbhelpers addNewExercise, error: ', err);
       // cb(err);
     } else {
-      console.log('this is the result: ', result);
+      console.log('Successful addition of exercise to DB');
       cb();
     }
   });
@@ -47,9 +47,10 @@ exports.addAllSetData = (workoutName, setData, cb) => {
       if (err) {
         console.log('ERROR in dbhelpers addAllSetData, error: ', err);
       } else {
-        console.log('Successful add to DB');
+        console.log('Successful addition of sets to DB');
         itemsProcessed += 1;
         if (itemsProcessed === array.length) {
+          console.log('all items processed!');
           cb(result);
         }
       }
@@ -64,6 +65,7 @@ exports.getUsersWorkouts = (username, cb) => {
       console.log('ERROR in dbhelpers getUsersWorkouts, error: ', err);
       // cb(err);
     } else {
+      console.log('Successful retrieval of User\'s Workouts');
       cb(result);
     }
   });
@@ -75,6 +77,7 @@ exports.getUsersCategories = (username, cb) => {
     if (err) {
       console.log('ERROR in dbhelpers getUsersCategories, error: ', err);
     } else {
+      console.log('Successful retrieval of User\'s Cateogries');
       cb(result);
     }
   });
