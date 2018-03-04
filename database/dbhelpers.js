@@ -34,7 +34,7 @@ exports.addNewExercise = (workoutName, date, location, notes, cb) => {
       // cb(err);
     } else {
       console.log('Successful addition of exercise to DB');
-      cb();
+      cb(result);
     }
   });
 };
@@ -89,6 +89,18 @@ exports.getUserWorkoutsByCategory = (username, category, cb) => {
     if (err) {
       console.log('ERROR in dbhelpers getUserWorkoutsByCategory, error: ', err);
     } else {
+      cb(result);
+    }
+  });
+};
+
+exports.getLatestExercises = (username, cb) => {
+  const queryString = 'select workouts.name, exercises.date from workouts, exercises where workouts.id = exercises.workout_ID AND workouts.user_ID=(SELECT id FROM users WHERE username=?) order by date desc limit 0,5';
+  db.query(queryString, [username], (err, result) => {
+    if (err) {
+      console.log('ERROR in dbhelpers getLatestExercises, error: ', err);
+    } else {
+      console.log('Successful read from DB with results: ', result);
       cb(result);
     }
   });

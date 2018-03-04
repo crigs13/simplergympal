@@ -8,6 +8,9 @@ import FlatButton from 'material-ui/FlatButton';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
+import Moment from 'react-moment';
+
+const moment = require('moment');
 
 import axios from 'axios';
 
@@ -22,45 +25,21 @@ export default class Stats extends React.Component {
   render() {
     return (
       <div>
-        hello
+        {
+          this.props.latestExercises.map((exercise, i) => {
+            const friendlyDate = moment(exercise.date).format('dddd, MMMM Do YYYY, h:mm a');
+            return (
+              <div>
+                <ListItem
+                  primaryText={exercise.name}
+                  secondaryText={friendlyDate}
+                  key={i}
+                />
+              </div>
+            );
+          })
+        }
       </div>
     );
   }
 }
-
-// render() {
-//   return (
-//     <div>
-//       {
-//         this.props.exercises.map((exercise, i) => {
-//
-//         })
-//       }
-//     </div>
-//   );
-// }
-
-// return (
-//   <div>
-//     <List>
-//       {this.props.userWorkouts.map((workout, i) => {
-//         return (
-//           <ListItem
-//             primaryText={workout}
-//             rightIcon={<ActionInfo />}
-//             onClick={this.props.handleWorkoutListClick.bind(this, workout)}
-//             key={i}
-//           />
-//       );
-//       })}
-//     </List>
-//     <Divider />
-//     <List>
-//       <ListItem
-//         primaryText="Add New Workout"
-//         rightIcon={<ActionInfo />}
-//         onClick={this.props.handleWorkoutDialogOpen}
-//       />
-//     </List>
-//   </div>
-// );

@@ -54,7 +54,10 @@ app.post('/categories/workouts', (req, res) => {
 });
 
 app.post('/exercises/latest', (req, res) => {
-  // const { username, }
+  const { username } = req.body;
+  dbhelper.getLatestExercises(username, (data) => {
+    res.status(200).send(data);
+  });
 });
 
 const port = 9001;

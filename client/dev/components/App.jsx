@@ -1,8 +1,6 @@
 import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
 import SwipeableViews from 'react-swipeable-views';
 import Workouts from './Workouts.jsx';
 import Categories from './Categories.jsx';
@@ -52,49 +50,53 @@ export default class App extends React.Component {
       userCategories: [],
       currentWorkout: '',
     };
-    this.handleTabChange = this.handleTabChange.bind(this);
+    this.addNewExerciseToDB = this.addNewExerciseToDB.bind(this);
+    this.addNewSetsToDB = this.addNewSetsToDB.bind(this);
+    this.addNewWorkout = this.addNewWorkout.bind(this);
+    this.addSet = this.addSet.bind(this);
+    this.checkRequiredNewExerciseFields = this.checkRequiredNewExerciseFields.bind(this);
+    this.checkRequiredNewWorkoutFields = this.checkRequiredNewWorkoutFields.bind(this);
+    this.checkRequiredSetInformation = this.checkRequiredSetInformation.bind(this);
     this.getLatestExercises = this.getLatestExercises.bind(this);
     this.getUsersCategories = this.getUsersCategories.bind(this);
     this.getUsersWorkouts = this.getUsersWorkouts.bind(this);
-    this.handleRepChange = this.handleRepChange.bind(this);
-    this.handleWeightChange = this.handleWeightChange.bind(this);
+    this.handleCategoryDialogClose = this.handleCategoryDialogClose.bind(this);
+    this.handleCategoryDialogListClick = this.handleCategoryDialogListClick.bind(this);
+    this.handleCategoryDialogOpen = this.handleCategoryDialogOpen.bind(this);
+    this.handleCategoryListClick = this.handleCategoryListClick.bind(this);
+    this.handleExistingCategorySelect = this.handleExistingCategorySelect.bind(this);
     this.handleExerciseDialogOpen = this.handleExerciseDialogOpen.bind(this);
     this.handleExerciseDialogClose = this.handleExerciseDialogClose.bind(this);
-    this.handleWorkoutDialogOpen = this.handleWorkoutDialogOpen.bind(this);
-    this.handleWorkoutDialogClose = this.handleWorkoutDialogClose.bind(this);
-    this.handleNewWorkoutNameChange = this.handleNewWorkoutNameChange.bind(this);
-    this.handleNewWorkoutCategoryChange = this.handleNewWorkoutCategoryChange.bind(this);
-    this.handleWorkoutListClick = this.handleWorkoutListClick.bind(this);
-    this.handleExistingCategorySelect = this.handleExistingCategorySelect.bind(this);
+    this.handleRepChange = this.handleRepChange.bind(this);
     this.handleNewCategorySelect = this.handleNewCategorySelect.bind(this);
-    this.checkRequiredNewExerciseFields = this.checkRequiredNewExerciseFields.bind(this);
-    this.checkRequiredSetInformation = this.checkRequiredSetInformation.bind(this);
-    this.checkRequiredNewWorkoutFields = this.checkRequiredNewWorkoutFields.bind(this);
-    this.addNewWorkout = this.addNewWorkout.bind(this);
-    this.addNewExerciseToDB = this.addNewExerciseToDB.bind(this);
-    this.addNewSetsToDB = this.addNewSetsToDB.bind(this);
-    this.addSet = this.addSet.bind(this);
-    this.handleCategoryListClick = this.handleCategoryListClick.bind(this);
-    this.handleCategoryDialogClose = this.handleCategoryDialogClose.bind(this);
-    this.handleCategoryDialogOpen = this.handleCategoryDialogOpen.bind(this);
-    this.handleCategoryDialogListClick = this.handleCategoryDialogListClick.bind(this);
+    this.handleNewWorkoutCategoryChange = this.handleNewWorkoutCategoryChange.bind(this);
+    this.handleNewWorkoutNameChange = this.handleNewWorkoutNameChange.bind(this);
+    this.handleTabChange = this.handleTabChange.bind(this);
+    this.handleWeightChange = this.handleWeightChange.bind(this);
+    this.handleWorkoutDialogClose = this.handleWorkoutDialogClose.bind(this);
+    this.handleWorkoutDialogOpen = this.handleWorkoutDialogOpen.bind(this);
+    this.handleWorkoutListClick = this.handleWorkoutListClick.bind(this);
   }
 
   componentDidMount() {
     this.getUsersCategories();
     this.getUsersWorkouts();
-  }
-
-  handleTabChange(value) {
-    this.setState({
-      slideIndex: value,
-    });
+    this.getLatestExercises();
   }
 
   getLatestExercises() {
-    // axios.post('/exercises/latest', {
-    //
-    // })
+    axios.post('/exercises/latest', {
+      username: this.state.username,
+    })
+      .then((data) => {
+        console.log('this is the data: ', data);
+        this.setState({
+          latestExercises: data.data,
+        });
+      })
+      .catch((err) => {
+        console.log('ERROR in getLatestExercises, error: ', err);
+      });
   }
 
   getUsersCategories() {
@@ -127,6 +129,12 @@ export default class App extends React.Component {
       .catch((err) => {
         console.log('ERROR in componentDidMount within Workouts.jsx, error: ', err);
       });
+  }
+
+  handleTabChange(value) {
+    this.setState({
+      slideIndex: value,
+    });
   }
 
   handleRepChange(e) {
@@ -390,7 +398,7 @@ export default class App extends React.Component {
           onChange={this.handleTabChange}
           value={this.state.slideIndex}
         >
-          <Tab label="Recent Stats" value={0} />
+          <Tab label="Latest Exercises" value={0} />
           <Tab label="Workouts" value={1} />
           <Tab label="Categories" value={2} />
         </Tabs>
@@ -399,13 +407,13 @@ export default class App extends React.Component {
           onChangeIndex={this.handleTabChange}
         >
           <div style={styles.slide}>
-            <h2 style={styles.headline}>Stats</h2>
-            show recent workouts here<br />
-            <Stats />
+            <h2 style={styles.headline}>Latest Exercises</h2>
+            <Stats
+              latestExercises={this.state.latestExercises}
+            />
           </div>
           <div style={styles.slide}>
             <h2 style={styles.headline}>Workouts</h2>
-            List out the user's workouts here<br />
             <Workouts
               addNewExerciseToDB={this.addNewExerciseToDB}
               addSet={this.addSet}
@@ -420,7 +428,6 @@ export default class App extends React.Component {
           </div>
           <div style={styles.slide}>
             <h2 style={styles.headline}>Categories</h2>
-            List out the user's groups/categories here<br />
             <Categories
               username="chris"
               userCategories={this.state.userCategories}
