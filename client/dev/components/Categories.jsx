@@ -292,42 +292,15 @@ export default class Categories extends React.Component {
   }
 
   render() {
-    const categoryActions = [
-      <FlatButton
-        label="Exit"
-        primary={true}
-        onClick={this.handleCategoryDialogClose}
-      />,
-    ];
     return (
       <div>
-        <Dialog
-          title="Your Workouts"
-          actions={categoryActions}
-          modal={false}
-          open={this.state.categoryDialogOpen}
-          onRequestClose={this.handleCategoryDialogClose}
-        >
-          {
-            this.state.userWorkouts.map((workout, i) => {
-              return (
-                <ListItem
-                  primaryText={workout}
-                  rightIcon={<ActionDelete />}
-                  onClick={console.log('fillthisin')}
-                  key={i}
-                />
-              );
-            })
-          }
-        </Dialog>
         <List>
-          {this.state.userCategories.map((category, i) => {
+          {this.props.userCategories.map((category, i) => {
             return (
               <ListItem
                 primaryText={category}
                 rightIcon={<ActionDelete />}
-                onClick={this.handleCategoryListClick.bind(this, category)}
+                onClick={this.props.handleCategoryListClick.bind(this, category)}
                 key={i}
               />
           );
@@ -337,3 +310,24 @@ export default class Categories extends React.Component {
     );
   }
 }
+
+// <Dialog
+//   title="Workouts From Category 'x'"
+//   actions={categoryActions}
+//   modal={false}
+//   open={this.state.categoryDialogOpen}
+//   onRequestClose={this.handleCategoryDialogClose}
+//   >
+//   {
+//     this.state.userWorkouts.map((workout, i) => {
+//       return (
+//         <ListItem
+//           primaryText={workout}
+//           rightIcon={<ActionDelete />}
+//           onClick={console.log('fillthisin')}
+//           key={i}
+//           />
+//       );
+//     })
+//   }
+// </Dialog>

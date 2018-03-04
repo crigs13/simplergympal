@@ -52,6 +52,10 @@ app.post('/categories/workouts', (req, res) => {
   });
 });
 
+app.post('/exercises/latest', (req, res) => {
+  // const { username, }
+});
+
 const port = 9001;
 
 app.listen(port, () => {
