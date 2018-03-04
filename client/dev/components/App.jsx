@@ -51,6 +51,7 @@ export default class App extends React.Component {
       userWorkouts: [],
       userCategories: [],
       currentWorkout: '',
+      currentCategory: '',
       currentExerciseId: '',
       setDialogOpen: false,
     };
@@ -330,6 +331,7 @@ export default class App extends React.Component {
         });
         this.setState({
           userWorkouts: temp,
+          currentCategory: category,
         }, this.toggleCategoryDialog);
       })
       .catch((err) => {
@@ -345,6 +347,10 @@ export default class App extends React.Component {
   toggleCategoryDialog() {
     this.setState({
       categoryDialogOpen: !this.state.categoryDialogOpen,
+    }, () => {
+      if (!this.state.categoryDialogOpen) {
+        this.getUsersWorkouts();
+      }
     });
   }
 
@@ -395,6 +401,7 @@ export default class App extends React.Component {
           toggleSetDialog={this.toggleSetDialog}
         />
         <CategoryDialog
+          currentCategory={this.state.currentCategory}
           categoryDialogOpen={this.state.categoryDialogOpen}
           handleCategoryDialogListClick={this.handleCategoryDialogListClick}
           handleCategoryListClick={this.handleCategoryListClick}
@@ -422,6 +429,7 @@ export default class App extends React.Component {
           workoutDialogOpen={this.state.workoutDialogOpen}
           toggleWorkoutDialog={this.toggleWorkoutDialog}
           toggleExerciseDialog={this.toggleExerciseDialog}
+          currentWorkout={this.state.currentWorkout}
         />
         <Tabs
           onChange={this.handleTabChange}

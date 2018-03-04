@@ -25,11 +25,12 @@ export default class CategoryDialog extends React.Component {
     return (
       <div>
         <Dialog
-          title="Workouts From Category 'x'"
+          title={`${this.props.currentCategory} Workouts`}
           actions={categoryActions}
           modal={false}
           open={this.props.categoryDialogOpen}
           onRequestClose={this.props.toggleCategoryDialog}
+          autoScrollBodyContent={true}
         >
           {
             this.props.userWorkouts.map((workout, i) => {
