@@ -1,17 +1,11 @@
 import React from 'react';
 
-import { List, ListItem } from 'material-ui/List';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import Dialog from 'material-ui/Dialog';
-import Divider from 'material-ui/Divider';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
-import Moment from 'react-moment';
-
-import axios from 'axios';
 
 export default class WorkoutDialog extends React.Component {
   constructor(props) {
@@ -26,7 +20,7 @@ export default class WorkoutDialog extends React.Component {
       <RaisedButton
         label="Cancel"
         primary={true}
-        onClick={this.props.handleWorkoutDialogClose}
+        onClick={this.props.toggleWorkoutDialog}
       />,
       <RaisedButton
         label="Submit"
@@ -40,7 +34,7 @@ export default class WorkoutDialog extends React.Component {
       <RaisedButton
         label="Cancel"
         primary={true}
-        onClick={this.props.handleExerciseDialogClose}
+        onClick={this.props.toggleExerciseDialog}
       />,
       <RaisedButton
         label="Add Set"
@@ -63,7 +57,7 @@ export default class WorkoutDialog extends React.Component {
           actions={workoutActions}
           modal={false}
           open={this.props.workoutDialogOpen}
-          onRequestClose={this.props.handleWorkoutDialogClose}
+          onRequestClose={this.props.toggleWorkoutDialog}
           autoScrollBodyContent={true}
         >
           <TextField
@@ -108,7 +102,7 @@ export default class WorkoutDialog extends React.Component {
           actions={exerciseActions}
           modal={false}
           open={this.props.exerciseDialogOpen}
-          onRequestClose={this.props.handleExerciseDialogClose}
+          onRequestClose={this.props.toggleExerciseDialog}
           autoScrollBodyContent={true}
         >
           <TextField

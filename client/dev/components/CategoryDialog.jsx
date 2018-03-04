@@ -3,14 +3,7 @@ import React from 'react';
 import { List, ListItem } from 'material-ui/List';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import Dialog from 'material-ui/Dialog';
-import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
-import MenuItem from 'material-ui/MenuItem';
-import SelectField from 'material-ui/SelectField';
-import TextField from 'material-ui/TextField';
-import Moment from 'react-moment';
-
-import axios from 'axios';
 
 export default class CategoryDialog extends React.Component {
   constructor(props) {
@@ -25,7 +18,7 @@ export default class CategoryDialog extends React.Component {
       <RaisedButton
         label="Exit"
         primary={true}
-        onClick={this.props.handleCategoryDialogClose}
+        onClick={this.props.toggleCategoryDialog}
       />,
     ];
 
@@ -36,7 +29,7 @@ export default class CategoryDialog extends React.Component {
           actions={categoryActions}
           modal={false}
           open={this.props.categoryDialogOpen}
-          onRequestClose={this.props.handleCategoryDialogClose}
+          onRequestClose={this.props.toggleCategoryDialog}
         >
           {
             this.props.userWorkouts.map((workout, i) => {
