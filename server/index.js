@@ -7,7 +7,7 @@ const app = express();
 app.use(parser.json());
 app.use(express.static(__dirname + '/../client/dist'));
 
-app.set('port', 9001);
+// app.set('port', 9001);
 
 app.post('/workouts/add', (req, res) => {
   const { name, category, username } = req.body;
