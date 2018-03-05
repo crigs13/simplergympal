@@ -62,6 +62,7 @@ export default class App extends React.Component {
     this.checkRequiredNewExerciseFields = this.checkRequiredNewExerciseFields.bind(this);
     this.checkRequiredNewWorkoutFields = this.checkRequiredNewWorkoutFields.bind(this);
     this.checkRequiredSetInformation = this.checkRequiredSetInformation.bind(this);
+    this.getAllExercises = this.getAllExercises.bind(this);
     this.getLatestExercises = this.getLatestExercises.bind(this);
     this.getUsersCategories = this.getUsersCategories.bind(this);
     this.getUsersWorkouts = this.getUsersWorkouts.bind(this);
@@ -90,6 +91,20 @@ export default class App extends React.Component {
 
   getLatestExercises() {
     axios.post('/exercises/latest', {
+      username: this.state.username,
+    })
+      .then((data) => {
+        this.setState({
+          latestExercises: data.data,
+        });
+      })
+      .catch((err) => {
+        console.log('ERROR in getLatestExercises, error: ', err);
+      });
+  }
+
+  getAllExercises() {
+    axios.post('/exercises/all', {
       username: this.state.username,
     })
       .then((data) => {
@@ -267,6 +282,7 @@ export default class App extends React.Component {
       .then(() => {
         this.setState({ workoutDialogOpen: false });
         this.getUsersWorkouts();
+        this.getUsersCategories();
       })
       .catch((err) => {
         console.log('ERROR in axios.post within addNewWorkout, error: ', err);
@@ -364,6 +380,12 @@ export default class App extends React.Component {
   toggleSetDialog() {
     this.setState({
       setDialogOpen: !this.state.setDialogOpen,
+    }, () => {
+      if (!this.state.setDialogOpen) {
+        this.setState({
+          setData: [],
+        });
+      }
     });
   }
 
@@ -391,6 +413,8 @@ export default class App extends React.Component {
     });
     this.toggleSetDialog();
   }
+
+
 
   render() {
     return (
@@ -436,8 +460,8 @@ export default class App extends React.Component {
           value={this.state.slideIndex}
         >
           <Tab label="Latest Exercises" value={0} />
-          <Tab label="Workouts" value={1} />
-          <Tab label="Categories" value={2} />
+          <Tab label="All Workouts" value={1} />
+          <Tab label="All Categories" value={2} />
         </Tabs>
         <SwipeableViews
           index={this.state.slideIndex}
@@ -448,6 +472,7 @@ export default class App extends React.Component {
             <Stats
               latestExercises={this.state.latestExercises}
               handleLatestExerciseListClick={this.handleLatestExerciseListClick}
+              getAllExercises={this.getAllExercises}
             />
           </div>
           <div style={styles.slide}>

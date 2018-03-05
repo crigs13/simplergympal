@@ -31,6 +31,7 @@
     "express": "^4.16.2",
     "material-ui": "^0.20.0",
     "moment": "^2.21.0",
+    "moment-timezone": "^0.5.14",
     "mysql": "^2.15.0",
     "node": "^9.5.0",
     "path": "^0.12.7",

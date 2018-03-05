@@ -7,7 +7,7 @@ const app = express();
 app.use(parser.json());
 app.use(express.static(__dirname + '/../client/dist'));
 
-// app.set('port', 9001);
+app.set('port', 9001);
 
 app.post('/workouts/add', (req, res) => {
   const { name, category, username } = req.body;
@@ -54,6 +54,13 @@ app.post('/categories/workouts', (req, res) => {
 app.post('/exercises/latest', (req, res) => {
   const { username } = req.body;
   dbhelper.getLatestExercises(username, (data) => {
+    res.status(200).send(data);
+  });
+});
+
+app.post('/exercises/all', (req, res) => {
+  const { username } = req.body;
+  dbhelper.getAllExercises(username, (data) => {
     res.status(200).send(data);
   });
 });

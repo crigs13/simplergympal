@@ -5,7 +5,7 @@ exports.addNewUser = (username, password, cb) => {
   db.query(queryString, [username, password], (err, result) => {
     if (err) {
       console.log('ERROR in dbhelpers addNewUser, error: ', err);
-      // cb(err);
+      cb(err);
     } else {
       cb(result);
     }
@@ -17,7 +17,7 @@ exports.addNewWorkout = (name, category, username, cb) => {
   db.query(queryString, [name, category, username], (err, result) => {
     if (err) {
       console.log('ERROR in dbhelpers addNewWorkout, error: ', err);
-      // cb(err);
+      cb(err);
     } else {
       cb(result);
     }
@@ -31,7 +31,7 @@ exports.addNewExercise = (workoutName, date, location, notes, cb) => {
   db.query(queryString, [workoutName, date, location, notes], (err, result) => {
     if (err) {
       console.log('ERROR in dbhelpers addNewExercise, error: ', err);
-      // cb(err);
+      cb(err);
     } else {
       cb(result);
     }
@@ -45,6 +45,7 @@ exports.addAllSetData = (exerciseId, setData, cb) => {
     db.query(queryString, [i + 1, set.weight, set.reps, exerciseId], (err, result) => {
       if (err) {
         console.log('ERROR in dbhelpers addAllSetData, error: ', err);
+        cb(err);
       } else {
         itemsProcessed += 1;
         if (itemsProcessed === array.length) {
@@ -61,7 +62,7 @@ exports.getUsersWorkouts = (username, cb) => {
   db.query(queryString, [username], (err, result) => {
     if (err) {
       console.log('ERROR in dbhelpers getUsersWorkouts, error: ', err);
-      // cb(err);
+      cb(err);
     } else {
       console.log('Successful retrieval of User\'s Workouts');
       cb(result);
@@ -74,6 +75,7 @@ exports.getUsersCategories = (username, cb) => {
   db.query(queryString, [username], (err, result) => {
     if (err) {
       console.log('ERROR in dbhelpers getUsersCategories, error: ', err);
+      cb(err);
     } else {
       console.log('Successful retrieval of User\'s Cateogries');
       cb(result);
@@ -86,6 +88,7 @@ exports.getUserWorkoutsByCategory = (username, category, cb) => {
   db.query(queryString, [username, category], (err, result) => {
     if (err) {
       console.log('ERROR in dbhelpers getUserWorkoutsByCategory, error: ', err);
+      cb(err);
     } else {
       cb(result);
     }
@@ -97,6 +100,20 @@ exports.getLatestExercises = (username, cb) => {
   db.query(queryString, [username], (err, result) => {
     if (err) {
       console.log('ERROR in dbhelpers getLatestExercises, error: ', err);
+      cb(err);
+    } else {
+      console.log('Successful read from DB with results: ', result);
+      cb(result);
+    }
+  });
+};
+
+exports.getAllExercises = (username, cb) => {
+  const queryString = 'select workouts.name, exercises.date, exercises.id from workouts, exercises where workouts.id = exercises.workout_ID AND workouts.user_ID=(SELECT id FROM users WHERE username=?) order by date desc';
+  db.query(queryString, [username], (err, result) => {
+    if (err) {
+      console.log('ERROR in dbhelpers getAllExercises, error: ', err);
+      cb(err);
     } else {
       console.log('Successful read from DB with results: ', result);
       cb(result);
@@ -109,6 +126,7 @@ exports.getExerciseSetData = (exerciseId, cb) => {
   db.query(queryString, [exerciseId], (err, result) => {
     if (err) {
       console.log('ERROR in dbhelpers getExerciseSetData, error: ', err);
+      cb(err);
     } else {
       cb(result);
     }

@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { List, ListItem } from 'material-ui/List';
+import RaisedButton from 'material-ui/RaisedButton';
 
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 export default class Stats extends React.Component {
   constructor(props) {
@@ -18,7 +19,7 @@ export default class Stats extends React.Component {
         <List>
           {
             this.props.latestExercises.map((exercise, i) => {
-              const friendlyDate = moment(exercise.date).format('dddd, MMMM Do YYYY, h:mm a');
+              const friendlyDate = moment().tz(exercise.date, 'America/New_York|US/Eastern').format('dddd, MMMM Do YYYY, h:mm a');
               return (
                 <div>
                   <ListItem
@@ -32,6 +33,11 @@ export default class Stats extends React.Component {
             })
           }
         </List>
+        <RaisedButton
+          label="Get All Exercises"
+          primary={true}
+          onClick={this.props.getAllExercises}
+        />
       </div>
     );
   }

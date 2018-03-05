@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { List, ListItem } from 'material-ui/List';
-import ActionInfo from 'material-ui/svg-icons/action/info';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -36,7 +35,6 @@ export default class SetDialog extends React.Component {
                 <ListItem
                   primaryText={`Set #${set.setNumber} - Weight: ${set.weight} lbs - Reps: ${set.reps}`}
                   secondaryText="Great Job!"
-                  rightIcon={<ActionInfo />}
                   key={i}
                 />
               );
