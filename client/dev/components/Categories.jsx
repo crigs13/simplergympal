@@ -21,7 +21,6 @@ export default class Categories extends React.Component {
               return (
                 <ListItem
                   primaryText={category}
-                  rightIcon={<ActionDelete />}
                   onClick={this.props.handleCategoryListClick.bind(this, category)}
                   key={i}
                 />

@@ -19,7 +19,7 @@ export default class Stats extends React.Component {
         <List>
           {
             this.props.latestExercises.map((exercise, i) => {
-              const friendlyDate = moment().tz(exercise.date, 'America/New_York|US/Eastern').format('dddd, MMMM Do YYYY, h:mm a');
+              const friendlyDate = moment(exercise.date).format('dddd, MMMM Do YYYY, h:mm a');
               return (
                 <div>
                   <ListItem
@@ -33,12 +33,27 @@ export default class Stats extends React.Component {
             })
           }
         </List>
-        <RaisedButton
-          label="Get All Exercises"
-          primary={true}
-          onClick={this.props.getAllExercises}
-        />
+        {
+          this.props.allExercisesButtonState ?
+            <RaisedButton
+              label="Get All Exercises"
+              primary={true}
+              onClick={this.props.getAllExercises}
+            />
+          :
+            <RaisedButton
+              label="Collapse"
+              primary={true}
+              onClick={this.props.getLatestExercises}
+            />
+        }
       </div>
     );
   }
 }
+
+// <RaisedButton
+//   label="Get All Exercises"
+//   primary={true}
+//   onClick={this.props.getAllExercises}
+// />

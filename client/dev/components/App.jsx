@@ -54,6 +54,7 @@ export default class App extends React.Component {
       currentCategory: '',
       currentExerciseId: '',
       setDialogOpen: false,
+      allExercisesButtonState: true,
     };
     this.addNewExerciseToDB = this.addNewExerciseToDB.bind(this);
     this.addNewSetsToDB = this.addNewSetsToDB.bind(this);
@@ -96,6 +97,12 @@ export default class App extends React.Component {
       .then((data) => {
         this.setState({
           latestExercises: data.data,
+        }, () => {
+          if (!this.state.allExercisesButtonState) {
+            this.setState({
+              allExercisesButtonState: true,
+            });
+          }
         });
       })
       .catch((err) => {
@@ -110,6 +117,7 @@ export default class App extends React.Component {
       .then((data) => {
         this.setState({
           latestExercises: data.data,
+          allExercisesButtonState: false,
         });
       })
       .catch((err) => {
@@ -414,8 +422,6 @@ export default class App extends React.Component {
     this.toggleSetDialog();
   }
 
-
-
   render() {
     return (
       <MuiThemeProvider>
@@ -470,9 +476,11 @@ export default class App extends React.Component {
           <div style={styles.slide}>
             <h2 style={styles.headline}>Latest Exercises</h2>
             <Stats
+              allExercisesButtonState={this.state.allExercisesButtonState}
               latestExercises={this.state.latestExercises}
               handleLatestExerciseListClick={this.handleLatestExerciseListClick}
               getAllExercises={this.getAllExercises}
+              getLatestExercises={this.getLatestExercises}
             />
           </div>
           <div style={styles.slide}>

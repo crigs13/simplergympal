@@ -21,7 +21,6 @@ export default class Workouts extends React.Component {
               return (
                 <ListItem
                   primaryText={workout}
-                  rightIcon={<ActionInfo />}
                   onClick={this.props.handleWorkoutListClick.bind(this, workout)}
                   key={i}
                 />
@@ -33,7 +32,6 @@ export default class Workouts extends React.Component {
         <List>
           <ListItem
             primaryText="Add New Workout"
-            rightIcon={<ActionInfo />}
             onClick={this.props.toggleWorkoutDialog}
           />
         </List>

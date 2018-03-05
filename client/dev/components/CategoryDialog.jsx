@@ -37,7 +37,6 @@ export default class CategoryDialog extends React.Component {
               return (
                 <ListItem
                   primaryText={workout}
-                  rightIcon={<ActionInfo />}
                   onClick={this.props.handleCategoryDialogListClick.bind(this, workout)}
                   key={i}
                 />

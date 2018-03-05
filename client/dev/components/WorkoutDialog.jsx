@@ -98,7 +98,7 @@ export default class WorkoutDialog extends React.Component {
           />
         </Dialog>
         <Dialog
-          title={this.props.currentWorkout}
+          title={`New ${this.props.currentWorkout} Exercise`}
           actions={exerciseActions}
           modal={false}
           open={this.props.exerciseDialogOpen}
